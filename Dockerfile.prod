@@ -1,0 +1,21 @@
+FROM node:18.10.0
+
+ENV NODE_OPTIONS="--max-old-space-size=8192"
+ENV TZ=America/Sao_Paulo
+
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
+RUN npm i -g @nestjs/cli typescript ts-node
+
+COPY package*.json /tmp/app/
+RUN cd /tmp/app && npm install
+
+COPY . /usr/src/app
+RUN cp -a /tmp/app/node_modules /usr/src/app
+COPY ./startup.prod.sh /opt/startup.prod.sh
+RUN sed -i 's/\r//g' /opt/startup.prod.sh
+
+WORKDIR /usr/src/app
+RUN npm run build
+
+CMD ["/opt/startup.prod.sh"]
