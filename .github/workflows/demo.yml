@@ -28,4 +28,4 @@ jobs:
 
       - name: Start the server
         if: ${{ always() }}
-        run: ssh production 'sudo sh update-container.sh'
+        run: ssh production 'ls -la && sudo sh update-container.sh'
